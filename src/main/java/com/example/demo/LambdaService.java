@@ -58,6 +58,7 @@ public class LambdaService {
      * BC专用解密方法
      * */
     public String decryptForBc(String res, String privateKey) throws Exception {
+        System.out.println("|||"+ res +"|||");
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>(){}.getType();
         List<String> list = gson.fromJson(res, listType);
