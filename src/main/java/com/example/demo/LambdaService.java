@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -59,9 +61,9 @@ public class LambdaService {
      * */
     public String decryptForBc(String res, String privateKey) throws Exception {
         System.out.println("|||"+ res +"|||");
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<String>>(){}.getType();
-        List<String> list = gson.fromJson(res, listType);
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> list = objectMapper.readValue(res, new TypeReference<List<String>>() {});
+
         System.out.println("-------|||" + privateKey + "|||---------");
         PrivateKey privateKeyFromString = getPrivateKeyFromString(privateKey);
 
@@ -80,45 +82,6 @@ public class LambdaService {
                 .payload(SdkBytes.fromUtf8String(payload))
                 .build();
         return lambdaClient.invoke(invokeRequest).payload().asUtf8String();
-    }
-
-    public static void main(String[] args) {
-        String res = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDchE8PqKH1El6B\n" +
-                "YF0C2oDdXy0R4FdupQ0jODbWQie8eP7PVS8Z/uIX9HyxLEtLoi5vA 2cKydF2V0U\n" +
-                "94IHEPol4j85j2e3hCmsu2f5dk7VGJC CyPGaw7TE3O/3fYnuopbxCFMscEB0SAZ\n" +
-                "L0bQ2LjXARf7cbCttw1BfsNdUS1PpV/HRAbcr/hTUrnZiyA/45yKRqpwmwohJvNO\n" +
-                "67latDl01wrm8AhW/lNu fCc4lz76yLqsp9Hs0WxqMCWh2cdo0ksIVZ/rkBHEs8O\n" +
-                "ZD mDvjk0cOy3BTMrSVsIZlp/vyB/l09dtC66c8w0uVuobKkRKujDZmdnH/qZpm2\n" +
-                "/spq3 EvAgMBAAECggEBAIB6GbIO1uV5IVSRdz9dXO0dMZ4Trf0J7sCRVOm6O3qE\n" +
-                "qDjV8Y5cwQ h4zA6lVfoktMdX8e4ILaCcMfxeHFzg7qkuZ9onM4AE2PPAEIImt9u\n" +
-                "443F4b8NyuJRmAO2Z184QLo8aAZOHhxX4jKqJ8EwM2kY wcFcyGS4AdDusFYtWSL\n" +
-                "6YLD QHMGmj6oLRIVu9l2c7Wau07KrJzxpss JPPonKG 1 jjZsdgGn05oJ64NEj\n" +
-                "zDkEVdSTmI05ITTdyXxfTPJ/wT/ aYHRET776quqowRHbj0nDbB9sXcsSr8bVXnv\n" +
-                "vGmIisWfMSbKmMwB1r8Ik0qAbrqLQ71BTC/o5akXOwkCgYEA8JrqjypxRvhIikVx\n" +
-                "ylwL51xmRA6/4aSzZxzSlo2kjfWfh/GiI2XPg vIdQAK6 97qr7WgsoOSpQvAJ2b\n" +
-                "szFRSNRAdYOSFXyZBSLQA6RM0Ab/0BpFVCu1UdwUTOjAm8mW89aGGaTMlw yxk2H\n" +
-                "Up4yk/T0wNfOsfNR85TLlM51R8sCgYEA6qBZM26aFn/ utpSehpitj2Y5Acn/ ET\n" +
-                "rBARlpjKhHSKUfbAwU2M/9RBhhNvkpkZfN9Zs7glQh/RTvlL1JK/uB HVaHgLZr0\n" +
-                "6t9t5mtYrdM3m/avckaU1zX8DiZbLvGjqci9bFzvQR0VlbVuKd8zxG3ZYvlLgZ l\n" +
-                "dSmB51Xdd60CgYApG36puSmjY3YZUaYQWcua2rmKNS7pYVdZbZ45JLgRnP6Fnm4C\n" +
-                "ODnNIzKbcsdq6f6p/HLv44 vhEPHiiX45pspo0HkEfeafjAypXD vkp1XEzGhEaG\n" +
-                "C/Wtp7k8LqQBud51iJhetz5RLNhxcvuEzQx9JOPQMs7Yrma5BBoIMYHuIwKBgH 5\n" +
-                "zPWHx1BqW2SjB3U7OfOVss6n6qmMgOYRVVHTWaQjwUz/dE2HBzQZ 5WerQV0XQCy\n" +
-                "oiWJIJdPtOU2J4bQYJg abE/T0fkbGIUQcLHO15ddo9sCnS YbaKx 14CfmTSBJc\n" +
-                "mmoMaZ7b021NeGxI uh7GHWd2vH00 DlOLeT8d19AoGAFMkvdeEePusrUz ORhRI\n" +
-                "q8MuO6MMLip JbkUa9DOnhWd0369HpAzEV9NGY9GVlFu8CyS60z9fpjxQ7joUvxO\n" +
-                "kxzlRVSEpJw8 iY/Y1dNVEw2dqrzlfgW4mLTk517dyK4YeOUMUh/lmdVFk59cQKj\n" +
-                "Z5FAPr0FlPuwVNpTtb2p2nw=";
-        String privateKeyPEM = res.replaceAll("\n", "").replaceAll(" ","");
-        byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
-        try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-            keyFactory.generatePrivate(keySpec);
-            System.out.println("succ");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // 从字符串中加载私钥
