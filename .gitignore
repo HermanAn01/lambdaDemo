@@ -6,7 +6,9 @@
 
 # BlueJ files
 *.ctxt
-
+.DS_Store
+target/
+.idea/
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
