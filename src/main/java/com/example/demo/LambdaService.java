@@ -1,6 +1,9 @@
 package com.example.demo;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
@@ -10,6 +13,7 @@ import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 import javax.crypto.Cipher;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyFactory;
@@ -44,17 +48,19 @@ public class LambdaService {
      * */
     public String sendRequest(LambdaEnum lambdaEnum) {
         // 构造加密请求的payload
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("ip", getMetadata(AWS_URL));
-        jsonObject.put("scene", lambdaEnum.getScene());
-        return invokeLambda(lambdaEnum.getFunctionName(), jsonObject.toJSONString());
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("ip", new JsonPrimitive(getMetadata(AWS_URL)));
+        jsonObject.add("scene", new JsonPrimitive(lambdaEnum.getScene()));
+        return invokeLambda(lambdaEnum.getFunctionName(), jsonObject.toString());
     }
 
     /**
      * BC专用解密方法
      * */
     public String decryptForBc(String res, String privateKey) throws Exception {
-        List<String> list = JSONObject.parseObject(res, List.class);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<String>>(){}.getType();
+        List<String> list = gson.fromJson(res, listType);
 
         PrivateKey privateKeyFromString = getPrivateKeyFromString(privateKey);
 
