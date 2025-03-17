@@ -61,7 +61,7 @@ public class LambdaService {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>(){}.getType();
         List<String> list = gson.fromJson(res, listType);
-
+        System.out.println("-------|||" + privateKey + "|||---------");
         PrivateKey privateKeyFromString = getPrivateKeyFromString(privateKey);
 
         List<String> decryptedChunks = decryptPrivateKeyChunks(list, privateKeyFromString);
