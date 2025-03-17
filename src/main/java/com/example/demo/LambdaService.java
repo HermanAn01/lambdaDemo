@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -60,11 +58,9 @@ public class LambdaService {
      * BC专用解密方法
      * */
     public String decryptForBc(String res, String privateKey) throws Exception {
-        System.out.println("|||"+ res +"|||");
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<String> list = objectMapper.readValue(res, new TypeReference<List<String>>() {});
-
-        System.out.println("-------|||" + privateKey + "|||---------");
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<String>>(){}.getType();
+        List<String> list = gson.fromJson(res, listType);
         PrivateKey privateKeyFromString = getPrivateKeyFromString(privateKey);
 
         List<String> decryptedChunks = decryptPrivateKeyChunks(list, privateKeyFromString);
@@ -81,7 +77,7 @@ public class LambdaService {
                 .functionName(functionName)
                 .payload(SdkBytes.fromUtf8String(payload))
                 .build();
-        return lambdaClient.invoke(invokeRequest).payload().asUtf8String();
+        return lambdaClient.invoke(invokeRequest).payload().asUtf8String().replaceAll("\\\\\"", "\"");
     }
 
     // 从字符串中加载私钥
