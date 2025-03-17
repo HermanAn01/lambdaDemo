@@ -77,7 +77,7 @@ public class LambdaService {
                 .functionName(functionName)
                 .payload(SdkBytes.fromUtf8String(payload))
                 .build();
-        return lambdaClient.invoke(invokeRequest).payload().asUtf8String().replaceAll("\\\\\"", "\"");
+        return lambdaClient.invoke(invokeRequest).payload().asUtf8String().replaceAll("\\\\\"", "\"").replaceAll("^\"|\"$", "");
     }
 
     // 从字符串中加载私钥
