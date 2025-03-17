@@ -83,10 +83,7 @@ public class LambdaService {
 
     // 从字符串中加载私钥
     private PrivateKey getPrivateKeyFromString(String privateKeyStr) throws Exception {
-        String privateKeyPEM = privateKeyStr
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replace("\n", "");
+        String privateKeyPEM = privateKeyStr.replace("\n", "");
         byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
 
         KeyFactory keyFactory = KeyFactory.getInstance(RSA);
