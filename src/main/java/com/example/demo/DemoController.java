@@ -23,13 +23,6 @@ public class DemoController {
 
     @PostMapping("test")
     public void demo(@RequestBody Bean bean){
-        String publicIp = getPublicIp();
-        String privateIp = getPrivateIp();
-
-        System.out.println("Public IP: " + publicIp);
-        System.out.println("Private IP: " + privateIp);
-
-
         String res = lambdaService.sendRequest(LambdaEnum.LB_SM);
         System.out.println(res);
         if("".equals(res)){
