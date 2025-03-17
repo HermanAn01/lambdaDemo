@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import net.spotec.lambda.LambdaEnum;
-import net.spotec.lambda.LambdaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
